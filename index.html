@@ -1,191 +1,434 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <title>Coming Soon 10</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--===============================================================================================-->
-    <link rel="icon" type="image/png" href="images/icons/favicon.ico" />
-    <!--===============================================================================================-->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="vendor/bootstrap/css/bootstrap.min.css"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Sk Sarfaraz Ahamed — Senior Software Engineer / Full Stack. TypeScript, React, Next.js, NestJS, Python, AWS, RAG."
     />
-    <!--===============================================================================================-->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+    <meta name="author" content="Sk Sarfaraz Ahamed" />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:title" content="sarfaraz@matrix:~$" />
+    <meta
+      property="og:description"
+      content="Senior Software Engineer / Full Stack. 4+ years. TypeScript · React · NestJS · Python · AWS · RAG"
     />
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css" />
-    <!--===============================================================================================-->
+    <meta property="og:type" content="website" />
+    <title>sarfaraz@matrix:~$</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap"
       rel="stylesheet"
-      type="text/css"
-      href="vendor/select2/select2.min.css"
     />
-    <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="css/util.css" />
-    <link rel="stylesheet" type="text/css" href="css/main.css" />
-    <!--===============================================================================================-->
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!--  -->
-    <div class="simpleslide100">
-      <div
-        class="simpleslide100-item bg-img1"
-        style="background-image: url('images/bg01.jpg')"
-      ></div>
-      <div
-        class="simpleslide100-item bg-img1"
-        style="background-image: url('images/bg02.jpg')"
-      ></div>
-      <div
-        class="simpleslide100-item bg-img1"
-        style="background-image: url('images/bg03.jpg')"
-      ></div>
-    </div>
+    <canvas id="matrix-rain" aria-hidden="true"></canvas>
+    <div class="crt-overlay" aria-hidden="true"></div>
 
-    <div class="size1 overlay1">
-      <!--  -->
-      <div
-        class="w-full flex-w flex-sb-m p-l-65 p-r-80 p-t-22 p-b-185 p-lr-15-sm respon8"
-      >
-        <div class="wrappic1 m-r-30 m-t-10 m-b-10">
-          <a href="#"><img src="images/icons/logo.png" alt="LOGO" /></a>
+    <main class="terminal" role="main">
+      <header class="term-header">
+        <div class="term-title">
+          sarfaraz@matrix: ~/portfolio &mdash; zsh &mdash; 80x24
         </div>
-
-        <div class="flex-w m-t-10 m-b-10">
-          <a href="https://github.com/ssadev/ssadev.github.io" class="size2 m1-txt1 flex-c-m how-btn1 trans-04">
-            Github <i class="fa fa-github" style="margin-left: 5px"></i>
-          </a>
-        </div>
-      </div>
-
-      <!--  -->
-      <div class="flex-sb flex-row-rev where3-parent p-l-58 p-r-46 respon2">
-        <!--  -->
-        <div class="where3 wsize2 respon1">
-          <h3 class="l1-txt2 p-b-30 respon6 respon7">Coming Soon</h3>
-
-          <p class="m2-txt1 respon6">Follow me for update now!</p>
-
-          <form
-            class="contact100-form validate-form p-t-55 w-full"
-            action="https://formspree.io/f/xleoobak"
-            method="POST"
+        <div class="term-controls">
+          <button id="theme-toggle" title="Toggle phosphor color">
+            <span class="label-text">phosphor</span>
+          </button>
+          <button id="effects-toggle" title="Toggle CRT/rain effects">
+            <span class="label-text">effects</span>
+          </button>
+          <button
+            id="resume-btn"
+            title="Open resume"
+            onclick="
+              window.open(
+                'https://drive.google.com/file/d/1Bw5EFS6mRTc6BnSuMBZCVl9vILIDGIYv/view?usp=sharing',
+                '_blank',
+              )
+            "
           >
-            <div
-              class="wrap-input100 validate-input m-lr-auto-lg"
-              data-validate="Email is required: ex@abc.xyz"
-            >
-              <input
-                class="s2-txt1 placeholder0 input100 trans-04"
-                type="text"
-                name="email"
-                placeholder="Email Address"
-                name="_replyto"
-              />
-              <div style="display: none">
-                <label>
-                  Your message:
-                  <textarea name="message">Hey There</textarea>
-                </label>
-              </div>
-              <button class="flex-c-m ab-t-r size4 s1-txt1 hov1 trans-04">
-                <i class="fa fa-paper-plane fs-15 cl0"></i>
-              </button>
+            <span class="label-text">./resume.pdf</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="term-body">
+        <div class="boot" id="boot"></div>
+
+        <pre class="ascii-banner" aria-label="ASCII banner">
+  ____             __
+ / ___|  __ _ _ __ / _| __ _ _ __ __ _ ____
+ \___ \ / _` | '__| |_ / _` | '__/ _` |_  /
+  ___) | (_| | |  |  _| (_| | | | (_| |/ /
+ |____/ \__,_|_|  |_|  \__,_|_|  \__,_/___|
+            s e n i o r   s o f t w a r e   e n g i n e e r</pre
+        >
+
+        <!-- whoami -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span><span class="prompt-path">~</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">whoami</span>
+        </div>
+        <div class="output">
+          <div class="kv-grid">
+            <div class="k">name</div>
+            <div class="v">Sk Sarfaraz Ahamed</div>
+            <div class="k">role</div>
+            <div class="v">Senior Software Engineer / Full Stack</div>
+            <div class="k">experience</div>
+            <div class="v"><span class="num">4+</span> years</div>
+            <div class="k">location</div>
+            <div class="v">Andheri, Mumbai</div>
+            <div class="k">phone</div>
+            <div class="v">+91 8585879272</div>
+            <div class="k">email</div>
+            <div class="v">
+              <a href="#" id="email-copy" data-email="sksarfaraz4006@gmail.com">sksarfaraz4006@gmail.com</a>
             </div>
-          </form>
+            <div class="k">github</div>
+            <div class="v">
+              <a href="https://github.com/ssadev" target="_blank" rel="noopener">github.com/ssadev</a>
+            </div>
+            <div class="k">linkedin</div>
+            <div class="v">
+              <a href="https://linkedin.com/in/sk-sarfaraz-951a87182" target="_blank" rel="noopener">linkedin.com/in/sk-sarfaraz</a>
+            </div>
+            <div class="k">status</div>
+            <div class="v"><span class="ok">[OPEN TO WORK]</span></div>
+          </div>
         </div>
 
-        <!--  -->
-        <!-- <div class="flex-w flex-col cd100 p-t-34 respon3">
-          <div class="flex-col wsize1 m-b-40 respon4">
-            <span class="l1-txt1 p-b-30 days">35</span>
-            <span class="s1-txt1">Days</span>
-          </div>
-
-          <div class="flex-col wsize1 m-b-40 respon4">
-            <span class="l1-txt1 p-b-30 hours">17</span>
-            <span class="s1-txt1">Hours</span>
-          </div>
-
-          <div class="flex-col wsize1 m-b-40 respon4">
-            <span class="l1-txt1 p-b-30 minutes">50</span>
-            <span class="s1-txt1">Minutes</span>
-          </div>
-
-          <div class="flex-col wsize1 m-b-40 respon4">
-            <span class="l1-txt1 p-b-30 seconds">39</span>
-            <span class="s1-txt1">Seconds</span>
-          </div>
-        </div> -->
-
-        <!--  -->
-        <div class="flex-w flex-col where2 respon5">
-          <a
-            href="https://twitter.com/SKSARFARAZAHAM1"
-            class="size3 flex-c-m how-social trans-04 m-r-3 m-l-3 m-b-5"
-            target="_blank"
-          >
-            <i class="fa fa-twitter-square"></i>
-          </a>
-
-          <a
-            href="https://github.com/ssadev"
-            class="size3 flex-c-m how-social trans-04 m-r-3 m-l-3 m-b-5"
-            target="_blank"
-          >
-            <i class="fa fa-github-square"></i>
-          </a>
-          <a
-            href="#"
-            class="size3 flex-c-m how-social trans-04 m-r-3 m-l-3 m-b-5"
-          >
-            <i class="fa fa-facebook-official"></i>
-          </a>
+        <!-- SECTION: Summary -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span><span class="prompt-path">~</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">cat summary.md</span>
         </div>
-      </div>
-    </div>
+        <div class="output summary-text">
+          <span class="com"># Summary</span>
+          <p>Senior Software Engineer with 4+ years building full-stack apps that scale. I work across the stack — building clean React and Next.js UIs on the front, and reliable APIs in NestJS, Node.js, and Python (FastAPI, Django) on the back.</p>
+          <p>I ship microservices on AWS and GCP, tune databases like PostgreSQL and MongoDB, and plug in GenAI / LLM features when they make sense. I like fast-moving teams and turning rough ideas into working products people can use.</p>
+        </div>
 
-    <!--===============================================================================================-->
-    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/bootstrap/js/popper.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/select2/select2.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/countdowntime/moment.min.js"></script>
-    <script src="vendor/countdowntime/moment-timezone.min.js"></script>
-    <script src="vendor/countdowntime/moment-timezone-with-data.min.js"></script>
-    <script src="vendor/countdowntime/countdowntime.js"></script>
-    <script>
-      $(".cd100").countdown100({
-        /*Set Endtime here*/
-        /*Endtime must be > current time*/
-        endtimeYear: 0,
-        endtimeMonth: 0,
-        endtimeDate: 35,
-        endtimeHours: 19,
-        endtimeMinutes: 0,
-        endtimeSeconds: 0,
-        timeZone: "",
-        // ex:  timeZone: "America/New_York"
-        //go to " http://momentjs.com/timezone/ " to get timezone
-      });
-    </script>
-    <!--===============================================================================================-->
-    <script src="vendor/tilt/tilt.jquery.min.js"></script>
-    <script>
-      $(".js-tilt").tilt({
-        scale: 1.1,
-      });
-    </script>
-    <!--===============================================================================================-->
-    <script src="js/main.js"></script>
+        <!-- SECTION: Professional Experience -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span
+          ><span class="prompt-path">~/experience</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">git log --oneline</span>
+        </div>
+        <div class="output">
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title"
+                >Software Development Engineer II &mdash; Data Sutram</span
+              >
+              <span class="entry-meta">Mar 2025 — Present · Mumbai</span>
+            </div>
+            <div class="entry-body">
+              <ul class="entry-list">
+                <li>
+                  <b>Own features end to end:</b> ship full-stack features in
+                  TypeScript, React (Next.js) on the front, and NestJS / Node.js
+                  / Python on the back. Focus on speed, accessibility, and
+                  scale.
+                </li>
+                <li>
+                  <b>Scalable architecture:</b> built and deployed microservices
+                  and serverless functions on AWS Lambda + API Gateway that
+                  handle heavy traffic.
+                </li>
+                <li>
+                  <b>Infra &amp; security:</b> used Docker to set up infra and
+                  run services locally. Added login with OAuth2, JWT, and
+                  role-based access (RBAC).
+                </li>
+                <li>
+                  <b>Data &amp; observability:</b> used AWS S3 and SQS to run
+                  reliable async jobs and keep services observable.
+                </li>
+                <li>
+                  <b>Team work:</b> worked closely with Product, QA, and DevOps
+                  in agile sprints. Ran code reviews, kept docs (DFDs) updated,
+                  and wrote Jest unit/integration tests.
+                </li>
+              </ul>
+            </div>
+            <div class="entry-stack">
+              <span>TypeScript</span><span>React</span><span>Next.js</span
+              ><span>NestJS</span><span>Python</span><span>AWS Lambda</span
+              ><span>Docker</span><span>OAuth2</span><span>Jest</span>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title"
+                >Software Development Engineer I &mdash; Data Sutram</span
+              >
+              <span class="entry-meta">Jul 2022 — Feb 2025 · Mumbai</span>
+            </div>
+            <div class="entry-body">
+              <ul class="entry-list">
+                <li>
+                  <b>Full-stack product work:</b> built user-facing features in
+                  React and Next.js, plus server APIs in Python (FastAPI) and
+                  Node.js.
+                </li>
+                <li>
+                  <b>Made it faster:</b> profiled DB queries and API response
+                  times to cut latency and make pages feel snappier.
+                </li>
+                <li>
+                  <b>Data pipelines:</b> built scrapers and ingestion pipelines
+                  to pull and clean external data for analytics features.
+                </li>
+                <li>
+                  <b>Cloud deploys:</b> handled deploys and hosting on AWS EC2,
+                  S3, and Lambda.
+                </li>
+              </ul>
+            </div>
+            <div class="entry-stack">
+              <span>React</span><span>Next.js</span><span>Python</span
+              ><span>FastAPI</span><span>Node.js</span><span>AWS EC2</span
+              ><span>S3</span><span>Lambda</span>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title"
+                >Software Developer Internship &mdash; Data Sutram</span
+              >
+              <span class="entry-meta">Dec 2021 — Jun 2022 · Mumbai</span>
+            </div>
+            <div class="entry-body">
+              Worked with the core product team to build and improve reusable
+              web UI parts in React.js and Next.js. Managed app code and state
+              through GitHub.
+            </div>
+            <div class="entry-stack">
+              <span>React.js</span><span>Next.js</span><span>GitHub</span>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title"
+                >Full Stack Developer Internship &mdash; Mirror Score</span
+              >
+              <span class="entry-meta">Aug 2020 — Jan 2022 · Delhi</span>
+            </div>
+            <div class="entry-body">
+              <ul class="entry-list">
+                <li>
+                  Built clean, easy-to-maintain REST APIs in Python (Django).
+                  Plugged in Google APIs and wrote automation scripts.
+                </li>
+                <li>
+                  Built UIs in ReactJS and packaged services with Docker and
+                  AWS.
+                </li>
+              </ul>
+            </div>
+            <div class="entry-stack">
+              <span>Python</span><span>Django</span><span>ReactJS</span
+              ><span>Docker</span><span>AWS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: Education -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span><span class="prompt-path">~</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">cat education.txt</span>
+        </div>
+        <div class="output">
+          <div class="kv-grid">
+            <div class="k">degree</div>
+            <div class="v">Bachelor of Computer Application</div>
+            <div class="k">institute</div>
+            <div class="v">Techno International New Town</div>
+            <div class="k">location</div>
+            <div class="v">Kolkata, India</div>
+            <div class="k">duration</div>
+            <div class="v">Jul 2019 — Jun 2022</div>
+          </div>
+        </div>
+
+        <!-- SECTION: Skills -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span
+          ><span class="prompt-path">~/skills</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">ls -la</span>
+        </div>
+        <div class="output">
+          <div class="skill-grid">
+            <div class="skill-group">
+              <div class="skill-group-title">front-end/</div>
+              <ul>
+                <li>JavaScript</li>
+                <li>TypeScript</li>
+                <li>React.js</li>
+                <li>Next.js</li>
+                <li>Redux</li>
+                <li>HTML5 / CSS3</li>
+                <li>Electron</li>
+                <li>jQuery</li>
+                <li>Design Systems</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <div class="skill-group-title">back-end/</div>
+              <ul>
+                <li>Python</li>
+                <li>FastAPI</li>
+                <li>Django</li>
+                <li>Flask</li>
+                <li>Selenium</li>
+                <li>Node.js</li>
+                <li>NestJS</li>
+                <li>REST APIs</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <div class="skill-group-title">ai_engineering/</div>
+              <ul>
+                <li>LLMs (ChatGPT, Claude)</li>
+                <li>Copilot</li>
+                <li>RAG</li>
+                <li>Vector Databases</li>
+                <li>Model Fine-Tuning</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <div class="skill-group-title">cloud_devops/</div>
+              <ul>
+                <li>AWS EC2</li>
+                <li>AWS S3</li>
+                <li>AWS Lambda</li>
+                <li>AWS SQS</li>
+                <li>API Gateway</li>
+                <li>GCP</li>
+                <li>Docker</li>
+                <li>Linux</li>
+                <li>GitHub CI/CD</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION: Projects -->
+        <div class="prompt-line">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span
+          ><span class="prompt-path">~/projects</span
+          ><span class="prompt-sep">$</span>
+          <span class="prompt-cmd">cat *.json</span>
+        </div>
+        <div class="output">
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title">MeetRead AI</span>
+              <span class="entry-meta"
+                >Jun 2026 · Meeting intelligence on your own infra</span
+              >
+            </div>
+            <div class="entry-body">
+              MeetRead joins your Google Meet calls, records audio, captures
+              transcripts, and writes summaries — without sending your data
+              anywhere you don't control.
+            </div>
+            <div class="entry-stack">
+              <span>Electron</span><span>Python</span><span>LLMs</span
+              ><span>Transcripts</span><span>Self-hosted</span>
+            </div>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head">
+              <span class="entry-title">AI Engineering Ecosystems</span>
+              <span class="entry-meta">Ongoing · RAG + Vector DBs</span>
+            </div>
+            <div class="entry-body">
+              Building small apps that use RAG (Retrieval-Augmented Generation)
+              and vector databases to read and make sense of messy multimedia
+              metadata.
+            </div>
+            <div class="entry-stack">
+              <span>RAG</span><span>Vector DB</span><span>LLMs</span
+              ><span>Python</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- interactive prompt -->
+        <div class="prompt-line input-prompt">
+          <span class="prompt-user">sarfaraz</span
+          ><span class="prompt-at">@</span
+          ><span class="prompt-host">matrix</span
+          ><span class="prompt-colon">:</span><span class="prompt-path">~</span
+          ><span class="prompt-sep">$</span>
+          <input
+            id="term-input"
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="terminal input"
+            placeholder="type 'help' and press enter"
+          />
+          <span class="cursor" aria-hidden="true"></span>
+        </div>
+        <div class="input-hint">
+          try: <span class="prompt-cmd">help</span> &middot;
+          <span class="prompt-cmd">whoami</span> &middot;
+          <span class="prompt-cmd">summary</span> &middot;
+          <span class="prompt-cmd">experience</span> &middot;
+          <span class="prompt-cmd">skills</span> &middot;
+          <span class="prompt-cmd">projects</span> &middot;
+          <span class="prompt-cmd">contact</span> &middot;
+          <span class="prompt-cmd">resume</span> &middot;
+          <span class="prompt-cmd">clear</span>
+        </div>
+        <div id="term-history" class="output hidden"></div>
+      </section>
+
+      <footer class="statusbar">
+        <div class="status-left">
+          <span>⚡ <span id="uptime">online</span></span>
+          <span>tty1</span>
+          <span>utf-8</span>
+        </div>
+        <div class="status-right">
+          <span id="copy-toast" aria-live="polite"></span>
+          <span>© <span id="year"></span> sarfaraz</span>
+        </div>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
   </body>
 </html>

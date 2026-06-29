@@ -1,0 +1,491 @@
+/* ============================================================
+   Sarfaraz.sh — matrix/hacker terminal portfolio
+   Phosphor green on black, CRT scanlines, matrix rain
+   ============================================================ */
+
+:root {
+  --bg: #000000;
+  --bg-term: rgba(0, 10, 0, 0.78);
+  --bg-term-solid: #020a02;
+  --border: #0f3f0f;
+  --border-bright: #1aff1a;
+
+  --green: #00ff41;          /* matrix phosphor */
+  --green-dim: #00a82a;
+  --green-dark: #006b1a;
+  --green-pale: #b8ffc8;
+
+  --amber: #ffb000;          /* alt phosphor */
+  --red: #ff003c;
+  --cyan: #00ffe1;
+  --muted: #4a7a4a;
+
+  --glow: 0 0 4px rgba(0, 255, 65, 0.6);
+  --glow-strong: 0 0 8px rgba(0, 255, 65, 0.9), 0 0 16px rgba(0, 255, 65, 0.4);
+
+  --font-mono: 'VT323', 'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+  --font-body: 'Share Tech Mono', 'JetBrains Mono', 'Courier New', monospace;
+
+  --radius: 2px;
+}
+
+[data-theme="amber"] {
+  --green: #ffb000;
+  --green-dim: #b87a00;
+  --green-dark: #663d00;
+  --green-pale: #ffe0a0;
+  --border: #3f2f0f;
+  --border-bright: #ffb000;
+  --glow: 0 0 4px rgba(255, 176, 0, 0.6);
+  --glow-strong: 0 0 8px rgba(255, 176, 0, 0.9), 0 0 16px rgba(255, 176, 0, 0.4);
+  --muted: #7a6a4a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--green);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: var(--glow);
+}
+
+::selection { background: var(--green); color: #000; text-shadow: none; }
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--cyan);
+  text-shadow: 0 0 4px rgba(0, 255, 225, 0.6);
+  transition: all .15s ease;
+}
+a:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+  text-shadow: 0 0 8px #fff, 0 0 16px var(--cyan);
+}
+
+/* ============================================================
+   Matrix rain canvas
+   ============================================================ */
+#matrix-rain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ============================================================
+   CRT scanlines + flicker overlay
+   ============================================================ */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  mix-blend-mode: multiply;
+}
+.crt-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+body.no-effects #matrix-rain,
+body.no-effects .crt-overlay { display: none; }
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.97; }
+}
+.terminal { animation: flicker 0.15s infinite; }
+
+/* ============================================================
+   Terminal window
+   ============================================================ */
+.terminal {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 24px auto;
+  background: var(--bg-term);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 12px rgba(0, 255, 65, 0.4),
+    0 0 32px rgba(0, 255, 65, 0.15),
+    inset 0 0 60px rgba(0, 50, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.term-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0, 30, 0, 0.5);
+  font-size: 13px;
+  user-select: none;
+}
+.term-title {
+  color: var(--green-pale);
+  letter-spacing: 1px;
+}
+.term-title::before {
+  content: '◉ ';
+  color: var(--red);
+  margin-right: 4px;
+}
+.term-controls {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+}
+.term-controls button {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--green);
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  text-shadow: var(--glow);
+  transition: all .15s ease;
+}
+.term-controls button:hover {
+  background: var(--green);
+  color: #000;
+  text-shadow: none;
+  box-shadow: var(--glow);
+}
+
+.term-body {
+  padding: 20px 28px 32px;
+  font-size: 15px;
+  min-height: calc(100vh - 100px);
+}
+
+/* ============================================================
+   Boot sequence
+   ============================================================ */
+.boot {
+  margin-bottom: 24px;
+  color: var(--green-dim);
+  font-size: 14px;
+}
+.boot .ok { color: var(--green); }
+.boot .warn { color: var(--amber); }
+.boot .fail { color: var(--red); }
+.boot-line { white-space: pre-wrap; }
+
+/* ============================================================
+   ASCII banner
+   ============================================================ */
+.ascii-banner {
+  margin: 16px 0 24px;
+  font-size: 12px;
+  line-height: 1.1;
+  color: var(--green);
+  white-space: pre;
+  overflow-x: auto;
+  text-shadow: var(--glow-strong);
+}
+
+/* ============================================================
+   Prompt + command output
+   ============================================================ */
+.prompt-line {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--green);
+  font-size: 15px;
+}
+.prompt-user  { color: var(--green); }
+.prompt-at    { color: var(--green-dim); }
+.prompt-host  { color: var(--cyan); }
+.prompt-colon { color: var(--green-dim); }
+.prompt-path  { color: var(--amber); }
+.prompt-sep   { color: var(--green); }
+.prompt-cmd   { color: var(--green-pale); font-weight: bold; }
+
+.output {
+  margin: 10px 0 0 0;
+  padding: 6px 0 6px 14px;
+  border-left: 2px solid var(--green-dark);
+  color: var(--green-pale);
+}
+
+/* key/value grid (whoami, education) */
+.kv-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 14px;
+  row-gap: 4px;
+  margin-top: 4px;
+  align-items: baseline;
+}
+.kv-grid .k {
+  color: var(--cyan);
+}
+.kv-grid .k::after {
+  content: ' :';
+  color: var(--green-dim);
+}
+.kv-grid .v {
+  color: var(--green-pale);
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* summary text */
+.summary-text .com { display: block; margin-bottom: 6px; }
+.summary-text p { margin: 0 0 8px; }
+.summary-text p:last-child { margin-bottom: 0; }
+.output .label { color: var(--cyan); }
+.output .val   { color: var(--green-pale); }
+.output .com   { color: var(--muted); font-style: italic; }
+.output .key   { color: var(--amber); }
+.output .str   { color: var(--green); }
+.output .num   { color: var(--cyan); }
+.output .ok    { color: var(--green); }
+.output .err   { color: var(--red); }
+
+/* Skill matrix grid */
+.skill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px 18px;
+  margin-top: 8px;
+  align-items: start;
+}
+.skill-group {
+  border: 1px solid var(--border);
+  padding: 8px 10px;
+  background: rgba(0, 30, 0, 0.3);
+}
+.skill-group-title {
+  color: var(--amber);
+  font-size: 13px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.skill-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.skill-group li::before {
+  content: '▸ ';
+  color: var(--green-dim);
+}
+
+/* Experience / project entries */
+.entry {
+  margin: 10px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: rgba(0, 30, 0, 0.25);
+}
+.entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.entry-title {
+  color: var(--amber);
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+.entry-meta {
+  color: var(--green-dim);
+  font-size: 13px;
+}
+.entry-body {
+  color: var(--green-pale);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.entry-list {
+  margin: 4px 0 0;
+  padding: 0 0 0 4px;
+  list-style: none;
+}
+.entry-list li {
+  position: relative;
+  padding-left: 14px;
+  margin: 4px 0;
+}
+.entry-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--green-dim);
+}
+.entry-list b {
+  color: var(--cyan);
+  font-weight: normal;
+}
+.entry-stack {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--cyan);
+}
+.entry-stack span {
+  display: inline-block;
+  padding: 1px 6px;
+  margin: 2px 4px 2px 0;
+  border: 1px solid var(--green-dark);
+  background: rgba(0, 50, 0, 0.4);
+  color: var(--green-pale);
+}
+
+/* Avatar ascii */
+.avatar-ascii {
+  display: inline-block;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  margin: 8px 0 16px;
+  background: rgba(0, 30, 0, 0.4);
+  font-size: 11px;
+  line-height: 1.05;
+  color: var(--green);
+  white-space: pre;
+}
+
+/* Live cursor */
+.cursor {
+  display: inline-block;
+  width: 9px;
+  height: 1em;
+  background: var(--green);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  animation: blink 1s steps(2) infinite;
+  box-shadow: var(--glow);
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Interactive input prompt */
+.input-prompt {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px dashed var(--green-dark);
+  padding-top: 16px;
+}
+.input-prompt input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--green-pale);
+  font-family: inherit;
+  font-size: 15px;
+  text-shadow: var(--glow);
+  caret-color: var(--green);
+}
+.input-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Status bar */
+.statusbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: rgba(0, 20, 0, 0.85);
+  border-top: 1px solid var(--green-dark);
+  padding: 4px 12px;
+  font-size: 12px;
+  color: var(--green-dim);
+  display: flex;
+  justify-content: space-between;
+  user-select: none;
+}
+.statusbar .status-right { display: flex; gap: 14px; }
+#copy-toast {
+  color: var(--amber);
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+#copy-toast.visible { opacity: 1; }
+
+/* Hidden util */
+.hidden { display: none !important; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 880px) {
+  .term-body { padding: 16px 16px 24px; font-size: 14px; }
+  .ascii-banner { font-size: 9px; }
+  .skill-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+  html, body { font-size: 14px; }
+  .terminal { margin: 8px; border-radius: 0; }
+  .term-header { padding: 6px 8px; font-size: 12px; }
+  .term-controls button { padding: 2px 6px; font-size: 11px; }
+  .term-body { padding: 12px 12px 20px; font-size: 13px; }
+  .ascii-banner { font-size: 7px; line-height: 1; }
+  .skill-grid { grid-template-columns: 1fr; }
+  .entry-head { font-size: 13px; }
+  .prompt-line { font-size: 13px; }
+  .input-prompt input { font-size: 14px; }
+}
+
+@media (max-width: 380px) {
+  .ascii-banner { font-size: 6px; }
+  .term-controls .label-text { display: none; }
+}
+
+/* ============================================================
+   Print
+   ============================================================ */
+@media print {
+  #matrix-rain, .crt-overlay, .statusbar, .term-controls { display: none; }
+  body { background: #fff; color: #000; text-shadow: none; }
+  .terminal { box-shadow: none; border: 1px solid #000; background: #fff; }
+  .output, .entry { color: #000; }
+  a { color: #000; text-shadow: none; }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .terminal { animation: none; }
+  .cursor { animation: none; }
+}
