@@ -365,17 +365,31 @@ body.no-effects .crt-overlay { display: none; }
   color: var(--green-pale);
 }
 
-/* Avatar ascii */
-.avatar-ascii {
-  display: inline-block;
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  margin: 8px 0 16px;
+/* Avatar image */
+.avatar-img {
+  display: block;
+  width: 200px;
+  height: auto;
+  border: 1px solid var(--border-bright);
+  padding: 4px;
   background: rgba(0, 30, 0, 0.4);
-  font-size: 11px;
-  line-height: 1.05;
-  color: var(--green);
-  white-space: pre;
+  box-shadow: var(--glow), inset 0 0 12px rgba(0, 255, 65, 0.15);
+  filter: grayscale(0.3) contrast(1.05);
+  image-rendering: pixelated;
+}
+
+.whoami-row {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.whoami-row .avatar-img { flex: 0 0 auto; }
+.whoami-row .kv-grid    { flex: 1 1 280px; min-width: 0; }
+
+@media (max-width: 720px) {
+  .whoami-row { flex-direction: column; }
+  .whoami-row .avatar-img { width: 140px; }
 }
 
 /* Live cursor */
