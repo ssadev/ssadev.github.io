@@ -1,6 +1,20 @@
-# Sarfaraz.ts — Portfolio
+# Sk Sarfaraz Ahamed — Portfolio
+
+Personal portfolio of **Sk Sarfaraz Ahamed** — Senior Software Engineer / Full Stack Developer based in Mumbai, India.
+
+Live site: **https://ssadev.github.io/**
 
 Code-themed / terminal-style portfolio. Pure HTML / CSS / JS. Zero deps.
+
+## About
+
+- **Name:** Sk Sarfaraz Ahamed
+- **Role:** Senior Software Engineer / Full Stack
+- **Location:** Andheri, Mumbai, India
+- **Experience:** 4+ years
+- **Currently:** SDE-II @ Data Sutram
+- **Stack:** TypeScript, React, Next.js, NestJS, Node.js, Python (FastAPI, Django, Flask), AWS (Lambda, S3, EC2, SQS, API Gateway), GCP, Docker, LLMs / RAG / Vector Databases
+- **Contact:** sksarfaraz4006@gmail.com · [LinkedIn](https://linkedin.com/in/sk-sarfaraz-951a87182) · [GitHub](https://github.com/ssadev)
 
 ## Run locally
 
@@ -9,34 +23,15 @@ python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
-## Deploy to GitHub Pages
+## Deploy
 
-1. Create repo (suggested name: `ssadev.github.io` or `portfolio`).
-2. Push:
-   ```bash
-   git init
-   git add .
-   git commit -m "init portfolio"
-   git branch -M main
-   git remote add origin git@github.com:ssadev/<repo>.git
-   git push -u origin main
-   ```
-3. GitHub → repo Settings → Pages → Source: `main` / root → Save.
-4. If repo is `<user>.github.io`, site live at `https://<user>.github.io/`.
-   Otherwise at `https://<user>.github.io/<repo>/`.
-
-`.nojekyll` is included so GitHub serves files as-is (no Jekyll pipeline).
+Hosted on GitHub Pages from `main` branch root. `.nojekyll` disables the Jekyll pipeline so files are served as-is.
 
 ## Files
 
 - `index.html` — markup
-- `styles.css` — VS Code Dark+ theme, Monokai alt
-- `script.js` — copy-email, theme toggle, easter egg
-- `resume.pdf` — downloadable resume
+- `styles.css` — phosphor-green CRT terminal theme + amber alt
+- `script.js` — interactive terminal commands, theme toggle, matrix rain
+- `profile.png` — profile picture
+- `robots.txt`, `sitemap.xml` — SEO
 - `.nojekyll` — disable Jekyll on GitHub Pages
-
-## Customizing
-
-- Edit content directly in `index.html` (no templates / build step).
-- Swap palette by editing CSS variables under `:root` and `[data-theme="monokai"]`.
-- Replace `resume.pdf` to update download.
