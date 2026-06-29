@@ -232,7 +232,7 @@ Jul 2019 – Jun 2022`,
 phone    : +91 8585879272
 github   : github.com/ssadev
 linkedin : linkedin.com/in/sk-sarfaraz`,
-    resume:   () => { window.open('resume.pdf', '_blank'); return 'opening resume.pdf...'; },
+    resume:   () => { window.open('https://drive.google.com/file/d/1Bw5EFS6mRTc6BnSuMBZCVl9vILIDGIYv/view?usp=sharing', '_blank'); return 'opening resume...'; },
     date:     () => new Date().toString(),
     sudo:     () => `sarfaraz is not in the sudoers file. This incident will be reported.`,
     matrix:   () => { fxBtn && fxBtn.click(); return 'effects toggled.'; },
