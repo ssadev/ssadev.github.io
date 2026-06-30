@@ -194,6 +194,22 @@
         </p>
         <div class="boot" id="boot"></div>
 
+        <div id="auth-gate" class="auth-gate" hidden aria-hidden="true">
+          <div class="auth-warn">▶ ESTABLISHING SECURE CHANNEL</div>
+          <div class="auth-conn-log" id="auth-conn-log"></div>
+          <div class="auth-progress" hidden>
+            <div class="auth-progress-label">
+              DECRYPTING SESSION KEY... <span class="auth-pct">0%</span>
+            </div>
+            <div class="auth-bar"><div class="auth-bar-fill"></div></div>
+            <div class="auth-status"></div>
+          </div>
+          <div class="auth-skip-hint">
+            <span class="auth-skip">[esc to skip]</span>
+          </div>
+        </div>
+
+        <div id="term-content" class="term-content gate-hidden">
         <pre class="ascii-banner" aria-label="ASCII banner">
   ____             __
  / ___|  __ _ _ __ / _| __ _ _ __ __ _ ____
@@ -580,6 +596,7 @@
           <span class="prompt-cmd">clear</span>
         </div>
         <div id="term-history" class="output hidden"></div>
+        </div>
       </section>
 
       <footer class="statusbar">
@@ -594,6 +611,10 @@
         </div>
       </footer>
     </main>
+
+    <div id="click-ripples" aria-hidden="true"></div>
+    <div id="glitch-bar" aria-hidden="true"></div>
+    <canvas id="cursor-trail" aria-hidden="true"></canvas>
 
     <script src="script.js"></script>
   </body>

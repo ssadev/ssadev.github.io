@@ -2,6 +2,42 @@
   "use strict";
 
   // ============================================================
+  // PHASE 0 — fx namespace (shared utilities)
+  // ============================================================
+  const motionMQ = matchMedia("(prefers-reduced-motion: reduce)");
+  const touchMQ = matchMedia("(hover: none), (pointer: coarse)");
+
+  const fx = {
+    reduced: motionMQ.matches,
+    touch: touchMQ.matches,
+    scrambleChars:
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノﾊﾋﾌﾍﾎ0123456789ABCDEF<>{}[]()=+-*&^%$#@!?/",
+    enabled() {
+      return !document.body.classList.contains("no-effects") && !fx.reduced;
+    },
+    rand(a, b) {
+      return a + Math.random() * (b - a);
+    },
+    pick(s) {
+      return s[Math.floor(Math.random() * s.length)];
+    },
+  };
+  motionMQ.addEventListener("change", (e) => {
+    fx.reduced = e.matches;
+  });
+
+  function sizeCanvasFor(c) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    c.width = window.innerWidth * dpr;
+    c.height = window.innerHeight * dpr;
+    c.style.width = window.innerWidth + "px";
+    c.style.height = window.innerHeight + "px";
+    const ctx = c.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return ctx;
+  }
+
+  // ============================================================
   // Year
   // ============================================================
   const yearEl = document.getElementById("year");
@@ -14,18 +50,10 @@
   const ctx = canvas && canvas.getContext("2d");
   let rainRAF = null;
   let drops = [];
-  const GLYPHS =
-    "アイウエオカキクケコサシスセソタチツテトナニヌネノﾊﾋﾌﾍﾎ0123456789ABCDEF<>$#@!*+/";
 
   function sizeCanvas() {
     if (!canvas) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = window.innerWidth + "px";
-    canvas.style.height = window.innerHeight + "px";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
+    sizeCanvasFor(canvas);
     const cols = Math.floor(window.innerWidth / 16);
     drops = new Array(cols).fill(0).map(() => Math.random() * -50);
   }
@@ -43,7 +71,7 @@
 
     ctx.font = '15px "VT323", monospace';
     for (let i = 0; i < drops.length; i++) {
-      const ch = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+      const ch = fx.pick(fx.scrambleChars);
       const x = i * 16;
       const y = drops[i] * 18;
 
@@ -73,7 +101,7 @@
     if (!document.body.classList.contains("no-effects")) startRain();
   });
 
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (!fx.reduced) {
     startRain();
   } else {
     canvas && canvas.remove();
@@ -84,7 +112,6 @@
   // ============================================================
   const bootEl = document.getElementById("boot");
 
-  // DOB: YYYY-MM-DD. Kernel version derived as <years>.<months> since this date.
   const DOB = new Date("2001-08-07");
   function ageVersion(dob) {
     const now = new Date();
@@ -105,7 +132,10 @@
   ];
 
   function typeBoot(i) {
-    if (!bootEl || i >= bootLines.length) return;
+    if (!bootEl || i >= bootLines.length) {
+      document.dispatchEvent(new CustomEvent("boot:done"));
+      return;
+    }
     const [tag, msg, cls] = bootLines[i];
     const line = document.createElement("div");
     line.className = "boot-line";
@@ -114,6 +144,132 @@
     setTimeout(() => typeBoot(i + 1), 140 + Math.random() * 120);
   }
   typeBoot(0);
+
+  // ============================================================
+  // PHASE 1 — Auth gate (auto cinematic: connect → decrypt → reveal)
+  // ============================================================
+  const gateEl = document.getElementById("auth-gate");
+  const termContent = document.getElementById("term-content");
+  let gatePhase = "idle"; // idle | connecting | decrypting | done
+  let gateAbort = false;
+
+  function revealContent() {
+    if (!termContent) return;
+    if (gateEl) {
+      gateEl.classList.add("auth-gate-out");
+      setTimeout(() => {
+        gateEl.setAttribute("hidden", "");
+      }, 350);
+    }
+    termContent.classList.remove("gate-hidden");
+    termContent.classList.add("gate-revealed");
+    setTimeout(() => {
+      document.dispatchEvent(new CustomEvent("content:revealed"));
+    }, 650);
+    gatePhase = "done";
+    document.removeEventListener("keydown", gateSkip, true);
+  }
+
+  function appendLine(parent, text, cls) {
+    const line = document.createElement("div");
+    line.className = "auth-line" + (cls ? " " + cls : "");
+    line.innerHTML = text;
+    parent.appendChild(line);
+    return line;
+  }
+
+  async function runConnectLog() {
+    const log = document.getElementById("auth-conn-log");
+    if (!log) return;
+    const lines = [
+      [120, "[net] resolving sarfaraz.matrix.local ...", ""],
+      [320, "[net] route established &middot; 198.51.100.42", "ok"],
+      [240, "[tls] handshake initiated", ""],
+      [300, "[tls] cipher: ECDHE-RSA-AES256-GCM", "ok"],
+      [220, "[auth] attempting access ...", "auth-loading"],
+    ];
+    for (const [delay, msg, cls] of lines) {
+      if (gateAbort) return;
+      await sleep(delay);
+      if (gateAbort) return;
+      appendLine(log, msg, cls);
+    }
+    await sleep(450);
+  }
+
+  function sleep(ms) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+
+  async function runDecrypt() {
+    if (gatePhase === "decrypting" || gatePhase === "done") return;
+    gatePhase = "decrypting";
+    const progressEl = gateEl.querySelector(".auth-progress");
+    if (progressEl) progressEl.removeAttribute("hidden");
+
+    const bar = gateEl.querySelector(".auth-bar-fill");
+    const pct = gateEl.querySelector(".auth-pct");
+    const status = gateEl.querySelector(".auth-status");
+
+    const steps = [
+      [0.3, "&gt; HANDSHAKE OK", "ok"],
+      [0.65, "&gt; KEY EXCHANGE OK", "ok"],
+      [1.0, "&gt; ACCESS GRANTED", "ok"],
+    ];
+    let stepIdx = 0;
+    const dur = 1300;
+    const start = performance.now();
+
+    await new Promise((resolve) => {
+      function frame(t) {
+        if (gateAbort) return resolve();
+        const p = Math.min(1, (t - start) / dur);
+        if (bar) bar.style.width = (p * 100).toFixed(1) + "%";
+        if (pct) pct.textContent = Math.floor(p * 100) + "%";
+        while (stepIdx < steps.length && p >= steps[stepIdx][0]) {
+          const [, msg, cls] = steps[stepIdx];
+          appendLine(status, msg, cls);
+          stepIdx++;
+        }
+        if (p < 1) requestAnimationFrame(frame);
+        else resolve();
+      }
+      requestAnimationFrame(frame);
+    });
+    await sleep(450);
+  }
+
+  async function runGate() {
+    gatePhase = "connecting";
+    document.addEventListener("keydown", gateSkip, true);
+    await runConnectLog();
+    if (gateAbort) return;
+    await runDecrypt();
+    if (gateAbort) return;
+    revealContent();
+  }
+
+  function gateSkip(e) {
+    if (e.key !== "Escape") return;
+    if (gatePhase === "done") return;
+    e.preventDefault();
+    gateAbort = true;
+    document.removeEventListener("keydown", gateSkip, true);
+    revealContent();
+  }
+
+  document.addEventListener("boot:done", () => {
+    if (!gateEl || !termContent) {
+      document.dispatchEvent(new CustomEvent("content:revealed"));
+      return;
+    }
+    if (fx.reduced || document.body.classList.contains("no-effects")) {
+      revealContent();
+      return;
+    }
+    gateEl.removeAttribute("hidden");
+    runGate();
+  });
 
   // ============================================================
   // Phosphor color toggle (green <-> amber)
@@ -132,6 +288,7 @@
         document.documentElement.dataset.theme = "amber";
         localStorage.setItem("phosphor", "amber");
       }
+      document.dispatchEvent(new CustomEvent("theme:change"));
     });
   }
 
@@ -150,7 +307,277 @@
       localStorage.setItem("fx", off ? "off" : "on");
       if (off) stopRain();
       else startRain();
+      document.dispatchEvent(
+        new CustomEvent("fx:toggle", { detail: { off } }),
+      );
     });
+  }
+
+  // ============================================================
+  // PHASE 2 — Decrypt scramble reveals
+  // ============================================================
+  const SCRAMBLE_SEL = [
+    ".entry-title",
+    ".entry-meta",
+    ".entry-list li",
+    ".skill-group-title",
+    ".skill-group li",
+    ".kv-grid .v",
+    ".prompt-cmd",
+  ].join(",");
+  const activeScrambles = new Set();
+  let scrambleRAF = null;
+  let scrambleObserver = null;
+
+  function scrambleTick(now) {
+    if (activeScrambles.size === 0) {
+      scrambleRAF = null;
+      return;
+    }
+    for (const s of activeScrambles) {
+      const p = Math.min(1, (now - s.start) / s.dur);
+      const revealed = Math.floor(p * s.target.length);
+      let out = "";
+      for (let i = 0; i < s.target.length; i++) {
+        const ch = s.target[i];
+        if (i < revealed || ch === " " || ch === "\n") out += ch;
+        else out += fx.pick(fx.scrambleChars);
+      }
+      s.node.textContent = out;
+      if (p >= 1) {
+        s.node.textContent = s.target;
+        s.node.classList.remove("scrambling");
+        activeScrambles.delete(s);
+      }
+    }
+    scrambleRAF = requestAnimationFrame(scrambleTick);
+  }
+
+  function startScramble(node) {
+    const target = node._scrambleTarget;
+    if (!target) return;
+    node.classList.remove("scramble-pending");
+    node.classList.add("scrambling");
+    const dur = Math.max(400, Math.min(900, target.length * 28));
+    activeScrambles.add({
+      node,
+      target,
+      start: performance.now(),
+      dur,
+    });
+    if (!scrambleRAF) scrambleRAF = requestAnimationFrame(scrambleTick);
+  }
+
+  function finishAllScrambles() {
+    for (const s of activeScrambles) {
+      s.node.textContent = s.target;
+      s.node.classList.remove("scrambling");
+    }
+    activeScrambles.clear();
+    cancelAnimationFrame(scrambleRAF);
+    scrambleRAF = null;
+    document.querySelectorAll(".scramble-pending").forEach((n) => {
+      if (n._scrambleTarget) n.textContent = n._scrambleTarget;
+      n.classList.remove("scramble-pending");
+    });
+  }
+
+  document.addEventListener("content:revealed", () => {
+    if (!termContent) return;
+    const nodes = termContent.querySelectorAll(SCRAMBLE_SEL);
+    nodes.forEach((n) => {
+      n._scrambleTarget = n.textContent;
+    });
+
+    if (fx.reduced || !fx.enabled()) {
+      return;
+    }
+
+    nodes.forEach((n) => n.classList.add("scramble-pending"));
+
+    scrambleObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            scrambleObserver.unobserve(e.target);
+            startScramble(e.target);
+          }
+        }
+      },
+      { rootMargin: "-5% 0px", threshold: 0.1 },
+    );
+    nodes.forEach((n) => scrambleObserver.observe(n));
+  });
+
+  document.addEventListener("fx:toggle", (e) => {
+    if (e.detail && e.detail.off) finishAllScrambles();
+  });
+
+  // ============================================================
+  // PHASE 3 — Heading glitch (random timer)
+  // ============================================================
+  let glitchTimer = null;
+  function scheduleGlitch() {
+    if (!fx.enabled()) return;
+    const targets = document.querySelectorAll(
+      ".prompt-cmd, .entry-title, .skill-group-title",
+    );
+    if (!targets.length) return;
+    const lo = fx.touch ? 16000 : 8000;
+    const hi = fx.touch ? 30000 : 15000;
+    glitchTimer = setTimeout(() => {
+      if (fx.enabled()) {
+        const t = targets[Math.floor(Math.random() * targets.length)];
+        t.classList.add("glitch");
+        setTimeout(() => t.classList.remove("glitch"), 380);
+      }
+      scheduleGlitch();
+    }, fx.rand(lo, hi));
+  }
+
+  document.addEventListener("content:revealed", scheduleGlitch);
+  document.addEventListener("fx:toggle", (e) => {
+    clearTimeout(glitchTimer);
+    glitchTimer = null;
+    if (e.detail && !e.detail.off) scheduleGlitch();
+  });
+
+  // ============================================================
+  // PHASE 4 — Click flash + ripple
+  // ============================================================
+  const ripplesEl = document.getElementById("click-ripples");
+  let lastClick = 0;
+  let aliveRipples = 0;
+
+  document.addEventListener("pointerdown", (e) => {
+    if (!fx.enabled()) return;
+    if (!ripplesEl) return;
+    const tgt = e.target;
+    if (tgt.closest && (tgt.closest("#term-input") || tgt.closest(".term-controls") || tgt.closest("#auth-gate")))
+      return;
+    if (tgt.id === "term-input") return;
+    const now = performance.now();
+    if (now - lastClick < 80) return;
+    lastClick = now;
+    if (aliveRipples >= 6) return;
+
+    document.body.classList.add("flash");
+    setTimeout(() => document.body.classList.remove("flash"), 130);
+
+    const r = document.createElement("span");
+    r.className = "ripple";
+    r.style.left = e.clientX + "px";
+    r.style.top = e.clientY + "px";
+    ripplesEl.appendChild(r);
+    aliveRipples++;
+    r.addEventListener("animationend", () => {
+      r.remove();
+      aliveRipples--;
+    });
+  });
+
+  // ============================================================
+  // PHASE 5 — Glitch bar sweep
+  // ============================================================
+  const barEl = document.getElementById("glitch-bar");
+  let barTimer = null;
+  function scheduleBar() {
+    if (!barEl || !fx.enabled()) return;
+    const lo = fx.touch ? 20000 : 10000;
+    const hi = fx.touch ? 40000 : 20000;
+    barTimer = setTimeout(() => {
+      if (fx.enabled()) {
+        barEl.classList.add("sweep");
+        setTimeout(() => barEl.classList.remove("sweep"), 240);
+      }
+      scheduleBar();
+    }, fx.rand(lo, hi));
+  }
+
+  document.addEventListener("content:revealed", scheduleBar);
+  document.addEventListener("fx:toggle", (e) => {
+    clearTimeout(barTimer);
+    barTimer = null;
+    if (e.detail && !e.detail.off) scheduleBar();
+  });
+
+  // ============================================================
+  // PHASE 6 — Cursor phosphor trail
+  // ============================================================
+  const trailCanvas = document.getElementById("cursor-trail");
+  if (trailCanvas && !fx.touch && !fx.reduced) {
+    const tctx = sizeCanvasFor(trailCanvas);
+    const TRAIL_LEN = 12;
+    const points = [];
+    let trailRAF = null;
+    let lastMove = performance.now();
+    let trailColor = "#00ff41";
+
+    function readPhosphor() {
+      const v = getComputedStyle(document.documentElement)
+        .getPropertyValue("--green")
+        .trim();
+      if (v) trailColor = v;
+    }
+    readPhosphor();
+    document.addEventListener("theme:change", readPhosphor);
+
+    window.addEventListener("resize", () => sizeCanvasFor(trailCanvas));
+
+    window.addEventListener("pointermove", (e) => {
+      if (e.pointerType === "touch") return;
+      points.push({ x: e.clientX, y: e.clientY });
+      if (points.length > TRAIL_LEN) points.shift();
+      lastMove = performance.now();
+      if (!trailRAF) trailRAF = requestAnimationFrame(drawTrail);
+    });
+
+    function drawTrail(now) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      tctx.globalCompositeOperation = "destination-out";
+      tctx.fillStyle = "rgba(0,0,0,0.35)";
+      tctx.fillRect(0, 0, w, h);
+      tctx.globalCompositeOperation = "lighter";
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+        const age = (i + 1) / points.length;
+        const r = 1 + age * 2;
+        tctx.fillStyle = trailColor;
+        if (i === points.length - 1) {
+          tctx.shadowColor = trailColor;
+          tctx.shadowBlur = 8;
+        } else {
+          tctx.shadowBlur = 0;
+        }
+        tctx.beginPath();
+        tctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        tctx.fill();
+      }
+      tctx.globalCompositeOperation = "source-over";
+      tctx.shadowBlur = 0;
+
+      if (now - lastMove > 600 && points.length) {
+        points.shift();
+      }
+      if (points.length === 0 && now - lastMove > 2000) {
+        tctx.clearRect(0, 0, w, h);
+        trailRAF = null;
+        return;
+      }
+      trailRAF = requestAnimationFrame(drawTrail);
+    }
+
+    document.addEventListener("fx:toggle", (e) => {
+      if (e.detail && e.detail.off) {
+        cancelAnimationFrame(trailRAF);
+        trailRAF = null;
+        points.length = 0;
+        tctx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+      }
+    });
+  } else if (trailCanvas) {
+    trailCanvas.style.display = "none";
   }
 
   // ============================================================
