@@ -10,7 +10,7 @@ Code-themed / terminal-style portfolio. Pure HTML / CSS / JS. Zero deps.
 
 - **Name:** Sk Sarfaraz Ahamed
 - **Role:** Senior Software Engineer / Full Stack
-- **Location:** Andheri, Mumbai, India
+- **Location:** Mumbai, India
 - **Experience:** 4+ years
 - **Currently:** SDE-II @ Data Sutram
 - **Stack:** TypeScript, React, Next.js, NestJS, Node.js, Python (FastAPI, Django, Flask), AWS (Lambda, S3, EC2, SQS, API Gateway), GCP, Docker, LLMs / RAG / Vector Databases

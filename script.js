@@ -208,7 +208,7 @@
   phosphor    toggle green/amber`,
     whoami: () =>
       `Sk Sarfaraz Ahamed — Senior Software Engineer / Full Stack
-Andheri, Mumbai · 4+ yrs · open to senior IC / staff roles`,
+ Mumbai · 4+ yrs · open to senior IC / staff roles`,
     summary: () =>
       `Senior Software Engineer with 4+ years building full-stack apps.
 I write clean React/Next.js UIs on the front, and reliable APIs
@@ -241,7 +241,6 @@ Jul 2019 – Jun 2022`,
                             to read messy multimedia metadata.`,
     contact: () =>
       `email    : sksarfaraz4006@gmail.com
-phone    : +91 8585879272
 github   : github.com/ssadev
 linkedin : linkedin.com/in/sk-sarfaraz`,
     resume: () => {
