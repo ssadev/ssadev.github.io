@@ -307,9 +307,7 @@
       localStorage.setItem("fx", off ? "off" : "on");
       if (off) stopRain();
       else startRain();
-      document.dispatchEvent(
-        new CustomEvent("fx:toggle", { detail: { off } }),
-      );
+      document.dispatchEvent(new CustomEvent("fx:toggle", { detail: { off } }));
     });
   }
 
@@ -425,14 +423,17 @@
     if (!targets.length) return;
     const lo = fx.touch ? 16000 : 8000;
     const hi = fx.touch ? 30000 : 15000;
-    glitchTimer = setTimeout(() => {
-      if (fx.enabled()) {
-        const t = targets[Math.floor(Math.random() * targets.length)];
-        t.classList.add("glitch");
-        setTimeout(() => t.classList.remove("glitch"), 380);
-      }
-      scheduleGlitch();
-    }, fx.rand(lo, hi));
+    glitchTimer = setTimeout(
+      () => {
+        if (fx.enabled()) {
+          const t = targets[Math.floor(Math.random() * targets.length)];
+          t.classList.add("glitch");
+          setTimeout(() => t.classList.remove("glitch"), 380);
+        }
+        scheduleGlitch();
+      },
+      fx.rand(lo, hi),
+    );
   }
 
   document.addEventListener("content:revealed", scheduleGlitch);
@@ -453,7 +454,12 @@
     if (!fx.enabled()) return;
     if (!ripplesEl) return;
     const tgt = e.target;
-    if (tgt.closest && (tgt.closest("#term-input") || tgt.closest(".term-controls") || tgt.closest("#auth-gate")))
+    if (
+      tgt.closest &&
+      (tgt.closest("#term-input") ||
+        tgt.closest(".term-controls") ||
+        tgt.closest("#auth-gate"))
+    )
       return;
     if (tgt.id === "term-input") return;
     const now = performance.now();
@@ -485,13 +491,16 @@
     if (!barEl || !fx.enabled()) return;
     const lo = fx.touch ? 20000 : 10000;
     const hi = fx.touch ? 40000 : 20000;
-    barTimer = setTimeout(() => {
-      if (fx.enabled()) {
-        barEl.classList.add("sweep");
-        setTimeout(() => barEl.classList.remove("sweep"), 240);
-      }
-      scheduleBar();
-    }, fx.rand(lo, hi));
+    barTimer = setTimeout(
+      () => {
+        if (fx.enabled()) {
+          barEl.classList.add("sweep");
+          setTimeout(() => barEl.classList.remove("sweep"), 240);
+        }
+        scheduleBar();
+      },
+      fx.rand(lo, hi),
+    );
   }
 
   document.addEventListener("content:revealed", scheduleBar);
@@ -669,7 +678,7 @@ Jul 2019 – Jun 2022`,
     contact: () =>
       `email    : sksarfaraz4006@gmail.com
 github   : github.com/ssadev
-linkedin : linkedin.com/in/sk-sarfaraz`,
+linkedin : linkedin.com/in/sk-sarfaraz-951a87182`,
     resume: () => {
       window.open(
         "https://drive.google.com/file/d/1Bw5EFS6mRTc6BnSuMBZCVl9vILIDGIYv/view?usp=sharing",
