@@ -681,7 +681,7 @@ github   : github.com/ssadev
 linkedin : linkedin.com/in/sarfaraz-ahamed-32a6052aa`,
     resume: () => {
       window.open(
-        "https://drive.google.com/file/d/1Bw5EFS6mRTc6BnSuMBZCVl9vILIDGIYv/view?usp=sharing",
+        "https://drive.google.com/file/d/1qYTR5rTVvsl-MzRHrnvX-wm0MdQKLagU/view?usp=sharing",
         "_blank",
       );
       return "opening resume...";
