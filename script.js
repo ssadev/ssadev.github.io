@@ -644,7 +644,7 @@
   phosphor    toggle green/amber`,
     whoami: () =>
       `Sk Sarfaraz Ahamed — Senior Software Engineer / Full Stack
- Mumbai · 4+ yrs · open to senior IC / staff roles`,
+ Bengaluru · 4+ yrs · open to senior IC / staff roles`,
     summary: () =>
       `Senior Software Engineer with 4+ years building full-stack apps.
 I write clean React/Next.js UIs on the front, and reliable APIs
@@ -661,7 +661,7 @@ ai         : LLMs (ChatGPT, Claude), Copilot, RAG,
 cloud      : AWS (EC2, S3, Lambda, SQS, API Gateway),
              GCP, Docker, Linux, GitHub CI/CD`,
     experience: () =>
-      `SDE-II  @ Data Sutram  Mar 2025 – Present  · Mumbai
+      `SDE-II  @ Data Sutram  Mar 2025 – Present  · Bengaluru
 SDE-I   @ Data Sutram  Jul 2022 – Feb 2025 · Mumbai
 Intern  @ Data Sutram  Dec 2021 – Jun 2022 · Mumbai
 Intern  @ Mirror Score Aug 2020 – Jan 2022 · Delhi`,
@@ -678,7 +678,7 @@ Jul 2019 – Jun 2022`,
     contact: () =>
       `email    : sksarfaraz4006@gmail.com
 github   : github.com/ssadev
-linkedin : linkedin.com/in/sk-sarfaraz-951a87182`,
+linkedin : linkedin.com/in/sarfaraz-ahamed-32a6052aa`,
     resume: () => {
       window.open(
         "https://drive.google.com/file/d/1Bw5EFS6mRTc6BnSuMBZCVl9vILIDGIYv/view?usp=sharing",

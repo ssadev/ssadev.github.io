@@ -1,6 +1,6 @@
 # Sk Sarfaraz Ahamed — Portfolio
 
-Personal portfolio of **Sk Sarfaraz Ahamed** — Senior Software Engineer / Full Stack Developer based in Mumbai, India.
+Personal portfolio of **Sk Sarfaraz Ahamed** — Senior Software Engineer / Full Stack Developer based in Bengaluru, India.
 
 Live site: **https://ssadev.github.io/**
 
@@ -10,11 +10,11 @@ Code-themed / terminal-style portfolio. Pure HTML / CSS / JS. Zero deps.
 
 - **Name:** Sk Sarfaraz Ahamed
 - **Role:** Senior Software Engineer / Full Stack
-- **Location:** Mumbai, India
+- **Location:** Bengaluru, India
 - **Experience:** 4+ years
 - **Currently:** SDE-II @ Data Sutram
 - **Stack:** TypeScript, React, Next.js, NestJS, Node.js, Python (FastAPI, Django, Flask), AWS (Lambda, S3, EC2, SQS, API Gateway), GCP, Docker, LLMs / RAG / Vector Databases
-- **Contact:** sksarfaraz4006@gmail.com · [LinkedIn](https://linkedin.com/in/sk-sarfaraz-951a87182) · [GitHub](https://github.com/ssadev)
+- **Contact:** sksarfaraz4006@gmail.com · [LinkedIn](https://linkedin.com/in/sarfaraz-ahamed-32a6052aa) · [GitHub](https://github.com/ssadev)
 
 ## Run locally
 
