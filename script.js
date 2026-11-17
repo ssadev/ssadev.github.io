@@ -343,7 +343,7 @@
       }
       s.node.textContent = out;
       if (p >= 1) {
-        s.node.textContent = s.target;
+        restoreScrambled(s.node);
         s.node.classList.remove("scrambling");
         activeScrambles.delete(s);
       }
@@ -366,16 +366,23 @@
     if (!scrambleRAF) scrambleRAF = requestAnimationFrame(scrambleTick);
   }
 
+  // Restore original markup so inline formatting (e.g. <b> labels) survives
+  // the text-only scramble.
+  function restoreScrambled(node) {
+    if (node._scrambleHTML != null) node.innerHTML = node._scrambleHTML;
+    else if (node._scrambleTarget) node.textContent = node._scrambleTarget;
+  }
+
   function finishAllScrambles() {
     for (const s of activeScrambles) {
-      s.node.textContent = s.target;
+      restoreScrambled(s.node);
       s.node.classList.remove("scrambling");
     }
     activeScrambles.clear();
     cancelAnimationFrame(scrambleRAF);
     scrambleRAF = null;
     document.querySelectorAll(".scramble-pending").forEach((n) => {
-      if (n._scrambleTarget) n.textContent = n._scrambleTarget;
+      restoreScrambled(n);
       n.classList.remove("scramble-pending");
     });
   }
@@ -385,6 +392,7 @@
     const nodes = termContent.querySelectorAll(SCRAMBLE_SEL);
     nodes.forEach((n) => {
       n._scrambleTarget = n.textContent;
+      n._scrambleHTML = n.innerHTML;
     });
 
     if (fx.reduced || !fx.enabled()) {
@@ -603,10 +611,13 @@
     showToast._t = setTimeout(() => toast.classList.remove("visible"), 2200);
   }
 
+  // Delegated: the scramble reveal re-creates the link node.
   if (emailLink) {
-    emailLink.addEventListener("click", async (e) => {
+    document.addEventListener("click", async (e) => {
+      const link = e.target.closest && e.target.closest("#email-copy");
+      if (!link) return;
       e.preventDefault();
-      const email = emailLink.dataset.email;
+      const email = link.dataset.email;
       try {
         await navigator.clipboard.writeText(email);
         showToast(`> ${email} copied`);
@@ -634,6 +645,7 @@
   education   degree info
   skills      tech I work with
   projects    things I'm building
+  certs       certifications
   contact     reach me
   resume      open resume.pdf
   clear       clear history
@@ -643,38 +655,49 @@
   matrix      toggle rain effects
   phosphor    toggle green/amber`,
     whoami: () =>
-      `Sk Sarfaraz Ahamed — Senior Software Engineer / Full Stack
- Bengaluru · 4+ yrs · open to senior IC / staff roles`,
+      `Sk Sarfaraz Ahamed — Senior Full-Stack Engineer (SDE II)
+ Bengaluru · 4.5 yrs · backend · cloud · AI / LLM`,
     summary: () =>
-      `Senior Software Engineer with 4+ years building full-stack apps.
-I write clean React/Next.js UIs on the front, and reliable APIs
-in NestJS, Node.js, and Python (FastAPI, Django) on the back.
-I ship microservices on AWS/GCP and plug in LLM features when
-they help.`,
+      `Senior Full-Stack Engineer (SDE II) with 4.5 years in backend
+systems, cloud services and AI applications. Grew from intern to
+SDE II at Data Sutram, building fraud, identity and AI decisioning
+services that serve 10M+ requests/day for leading Indian banks,
+with a real-time decision engine at sub-200ms p95.
+Node.js (NestJS), TypeScript, Python (FastAPI), MongoDB, Postgres,
+Redis, Elasticsearch, AWS serverless. Ships LLM / RAG / vector
+search to production.`,
     skills: () =>
-      `front-end  : JavaScript, TypeScript, React.js, Next.js, Redux,
-             HTML5, CSS3, Electron, jQuery, Design Systems
-back-end   : Python (FastAPI, Django, Flask, Selenium),
-             Node.js, NestJS, REST APIs
-ai         : LLMs (ChatGPT, Claude), Copilot, RAG,
-             Vector Databases, Model Fine-Tuning
-cloud      : AWS (EC2, S3, Lambda, SQS, API Gateway),
-             GCP, Docker, Linux, GitHub CI/CD`,
+      `backend   : Node.js, NestJS, TypeScript, JavaScript, Python,
+            FastAPI, Django, REST APIs, Microservices,
+            Event-Driven / Async Processing
+ai / llm  : LLM integration (multi-provider + open source), RAG,
+            Vector DBs (Qdrant), Real-Time AI Decisioning,
+            Voice AI, ChatGPT, Claude, Copilot
+databases : MongoDB, PostgreSQL, MySQL, Redis, Elasticsearch, Qdrant
+cloud     : AWS (Lambda, API Gateway, SQS, S3, EC2), Docker,
+            GitHub CI/CD, Linux, Jest (TDD), Logging & Alerting
+frontend  : React, Next.js, TypeScript, Redux, HTML, CSS
+security  : OAuth2, JWT, RBAC`,
     experience: () =>
       `SDE-II  @ Data Sutram  Mar 2025 – Present  · Bengaluru
 SDE-I   @ Data Sutram  Jul 2022 – Feb 2025 · Mumbai
 Intern  @ Data Sutram  Dec 2021 – Jun 2022 · Mumbai
-Intern  @ Mirror Score Aug 2020 – Jan 2022 · Delhi`,
+Intern  @ Mirror Score Aug 2020 – Nov 2021 · Delhi (Remote)`,
     education: () =>
       `Bachelor of Computer Application
 Techno International New Town · Kolkata
 Jul 2019 – Jun 2022`,
     projects: () =>
-      `1. MeetRead AI            — Meeting intelligence on your own infra.
-                            Records audio, captures transcripts,
-                            writes summaries. Data stays with you.
-2. AI Engineering Ecosystems — Small apps built on RAG + Vector DBs
-                            to read messy multimedia metadata.`,
+      `1. AI Voice Ops Console — Trigger outbound AI voice calls and read
+                           post-call analysis as clear reports.
+2. Meetread.ai           — AI meeting recorder for Google Meet.
+                           Audio, transcripts, summaries on your infra.
+3. c19tweet              — Python bot posting daily public data updates.
+4. whatWP                — Browser tool showing a site's tools/plugins.`,
+    certs: () =>
+      `Practical MongoDB: For Absolute Beginners — Udemy
+Python 3 Learning Course                  — Sololearn
+Top Linux Interview Question and Answer   — Udemy`,
     contact: () =>
       `email    : sksarfaraz4006@gmail.com
 github   : github.com/ssadev
@@ -703,7 +726,7 @@ linkedin : linkedin.com/in/sarfaraz-ahamed-32a6052aa`,
       return null;
     },
     ls: () =>
-      `about.md  skills/  experience/  projects/  resume.pdf  contact.sh`,
+      `about.md  skills/  experience/  projects/  certifications.txt  resume.pdf  contact.sh`,
     pwd: () => "/home/sarfaraz",
     uname: () => `sarfaraz-${KERNEL_VERSION}-matrix x86_64`,
   };
